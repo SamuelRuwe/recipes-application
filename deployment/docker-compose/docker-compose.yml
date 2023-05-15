@@ -1,0 +1,27 @@
+version: "4.9"
+
+networks:
+  puregeniusness-net:
+    driver: bridge
+
+services:
+  web:
+    ports:
+      - 3000:3000
+
+  config-service:
+    ports:
+      - 8081:8081
+
+  discovery:
+    ports:
+      - 8761:8761
+
+  gateway:
+    ports:
+      - 8080:8080
+
+  recipes:
+    ports:
+      - 8082:8082
+

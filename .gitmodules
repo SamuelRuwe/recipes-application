@@ -1,0 +1,3 @@
+[submodule "pure-geniusness-config"]
+	path = pure-geniusness-config
+	url = git@github.com:SamuelRuwe/pure-geniusness-config.git

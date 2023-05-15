@@ -1,0 +1,68 @@
+version: "4.9"
+
+networks:
+  puregeniusness-net:
+    driver: bridge
+
+services:
+  web:
+    build: 
+      context: ${FRONT_END_DIR}
+    container_name: webapp
+    networks:
+      - puregeniusness-net 
+    volumes:
+      - ${FRONT_END_DIR}/:/react-app
+      - /react-app/node_modules
+      - /react-app/.next
+
+  config-service:
+    build:
+      context: ${CONFIG_SERVICE_DIR}
+    container_name: config-service
+    network_mode: "host"
+    depends_on:
+      discovery:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "echo hello!!"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  discovery:
+    build:
+      context: ${DISCOVERY_DIR}
+    network_mode: "host"
+    container_name: discovery
+    healthcheck:
+      test: ["CMD-SHELL", "echo hello!!"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  gateway:
+    build:
+      context: ${GATEWAY_DIR}
+    network_mode: "host"
+    container_name: gateway
+    healthcheck:
+      test: ["CMD-SHELL", "echo hello!!"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    depends_on:
+      config-service:
+        condition: service_healthy
+
+  recipes:
+    build:
+      context: ${RECIPES_DIR}
+    container_name: recipes
+    network_mode: "host"
+    depends_on:
+      config-service:
+        condition: service_healthy
+      gateway:
+        condition: service_healthy
+
